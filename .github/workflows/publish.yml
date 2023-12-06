@@ -1,0 +1,30 @@
+name: Publish dotsef-base64
+
+on:
+  push:
+    branches:
+    - main
+  workflow_dispatch:
+
+env:
+  DOTNET_CLI_TELEMETRY_OPTOUT: 1
+ 
+permissions:
+  packages: write
+  contents: write
+
+jobs:
+  dotsef-base64:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-dotnet@v3
+        with:
+          global-json-file: global.json
+      - run: dotnet pack -c Release -p:PublicRelease=true
+      - run: dotnet nuget push dotsef-base64/bin/Release/*.nupkg -s https://api.nuget.org/v3/index.json -k ${{ secrets.NUGET_API_KEY }}
+      - run: nbgv tag
+      - run: git push origin v$(nbgv get-version -v NugetPackageVersion)
+        shell: bash
