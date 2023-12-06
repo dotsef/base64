@@ -8,14 +8,18 @@ if (!Console.IsInputRedirected)
 
 if (args.Length is not 1 || args[0] is "help" or "?" or "--help" or "-h")
 {
-    Console.Error.WriteLine("""
+    const string blue = "\x1b[34m";
+    const string fgReset = "\x1b[39m";
+    const string bold = "\x1b[1m";
+    const string fmReset = "\x1b[22m";
+    Console.Error.WriteLine($"""
         base64 encodes or decodes stdin into stdout
 
-        Examples:
+        {blue}Examples{fgReset}
 
-          echo 'example' | base64 encode
+          echo 'example' | base64 {bold}{blue}encode{fmReset}{fgReset}
+          echo 'ZXhhbXBsZQ==' | base64 {bold}{blue}decode{fmReset}{fgReset}
 
-          echo 'ZXhhbXBsZQ==' | base64 decode
         """);
 
     return 0;
